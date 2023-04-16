@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tripAdvisor map</title>
+  <link rel="stylesheet" href="mapss.css">
+</head>
+<body>
+  
+  <div class="search">
+  <input type="text" id="input" value="Kisii" class="input" onkeyup="myFunct()" placeholder="search a place">
+  <button onclick="myFun()" class="btn" id="btn">search</button>
+</div>
+
+  <iframe id="iframe" src=""  frameborder="0" onload="myFunc()"></iframe>
+  <div class="some" id="block">
+    <div class="loader" id="load"></div><br>
+    <div class="error" id="error">Oops! Try to change the place name.</div> 
+  </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!--SCRIPT-->
+<script>
+  if(sessionStorage.getItem('place').length>1){
+   document.getElementById("input").value = sessionStorage.getItem('place')
+   myFun()
+  }
+
+function myFun(){
+  document.getElementById("error").style.opacity="0"
+  setTimeout(myFunction,10000)
+  document.getElementById("block").style.opacity="1"
+    var input = document.getElementById("input").value
+    var iframe = document.getElementById("iframe")
+    document.getElementById("btn").style.backgroundColor="black"
+    iframe.style.opacity= "0.2"
+//jQuery
+    //api key embedding
+    var city = input;
+    
+ $.ajax({
+    method: 'GET',
+    url: 'https://api.api-ninjas.com/v1/geocoding?city=' + city,
+    headers: { 'X-Api-Key': 'Nm1H00lIBd9qeDAE9kRA7Q==ux8WAStaCLcMQAYA'},
+    contentType: 'application/json',
+    success: function(result) {
+        
+       console.log(result)
+        // Access the coordinates
+        var latitude = result[0].latitude;
+        var longitude = result[0].longitude;
+        console.log(latitude)
+        console.log(longitude)
+        var long = longitude
+        var lat = latitude
+        var link = "https://maps.google.com/maps?q="+ lat +","+long +"&output=embed"
+        iframe.src = link
+        sessionStorage.clear()
+    },
+    error: function ajaxError(jqXHR) {
+        console.error('Error: ', jqXHR.responseText);
+    }
+});
+}
+function myFunc(){
+  document.getElementById("block").style.opacity="0"
+  iframe.style.opacity= "1"
+  document.getElementById("btn").style.backgroundColor="blue"
+}
+function myFunct(){
+  document.getElementById("block").style.opacity="0"
+}
+function myFunction(){
+  document.getElementById("error").style.opacity="1"
+}
+</script>
+</html>
